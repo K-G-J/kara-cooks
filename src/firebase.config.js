@@ -1,11 +1,12 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
+require('dotenv').config();
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCOcEMRmixMq6b-HK6jKduBgtYSdky-M4E',
-  authDomain: 'kara-cooks.firebaseapp.com',
-  databaseURL: 'gs://kara-cooks.appspot.com/',
+  apiKey: `${process.env.REACT_APP_API_KEY}`,
+  authDomain: `${process.env.REACT_APP_AUTH_DOMAIN}`,
+  databaseURL: `${process.env.REACT_APP_DATABASE_URL}`,
   projectId: 'kara-cooks',
   storageBucket: 'kara-cooks.appspot.com',
   messagingSenderId: '742349286442',
