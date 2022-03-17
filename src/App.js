@@ -46,7 +46,10 @@ function App() {
 
   return (
     <div className="App">
-      <h1>My Recipes</h1>
+      <div className="logo-container">
+      <h1>Kara Cooks</h1>
+      <span><img id="bean-chef" src="Bean-Chef.png" /></span>
+      </div>
       <button onClick={() => setPopupActive(!popupActive)}>Add recipe</button>
       <div className="recipes">
         {recipes.map((recipe, i) => (
