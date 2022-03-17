@@ -44,6 +44,10 @@ h1 {
   text-align: left;
 }
 
+.recipeImage {
+  width: 50%
+}
+
 button {
   appearance: none;
   background: none;
