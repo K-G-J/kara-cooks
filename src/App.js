@@ -20,7 +20,7 @@ function App() {
   })
   const [popupActive, setPopupActive] = useState(false)
   const [images, setImages] = useState([])
-  const [urls, setUrls] = useState([])
+  // const [urls, setUrls] = useState([])
   const [progress, setProgress] = useState(0)
 
   const recipesCollectionRef = collection(db, 'recipes')
@@ -94,38 +94,43 @@ function App() {
   const handleChange = (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
       const newImage = e.target.files[i]
-      newImage['id'] = Math.random()
+      newImage.id = Math.random()
       setImages((prevState) => [...prevState, newImage])
     }
   }
 
-const handleImages = (file, subFolder, imageName, setProgress) => {
-  return new Promise((resolve, reject) => {
-    images.map(image => {
-    const imageRef = ref(storage, `images/${image.name}`)
-    const upload = uploadBytesResumable(imageRef, image);
-    upload.on(
-      'state_changed',
-      (snapShot) => {
-        const progress =
-          (snapShot.bytesTransferred / snapShot.totalBytes) * 100;
-      },
-      (error) => {
-        reject(error);
-      },
-      async () => {
-        try {
-          const url = await getDownloadURL(imageRef);
-          resolve(url);
-          console.log(url)
-        } catch (error) {
-          reject(error);
-        }
-      }
-    );
+  const handleImages = () => {
+    const urls =[]
+    return new Promise((resolve, reject) => {
+      images.map((image) => {
+        const imageRef = ref(storage, `images/${image.name}`)
+        const upload = uploadBytesResumable(imageRef, image)
+        upload.on(
+          'state_changed',
+          (snapShot) => {
+            const progress =
+              (snapShot.bytesTransferred / snapShot.totalBytes) * 100
+            setProgress(progress)
+          },
+          (error) => {
+            reject(error)
+          },
+          async () => {
+            try {
+              const url = await getDownloadURL(imageRef)
+              resolve(urls.push(url))
+            } catch (error) {
+              reject(error)
+            }
+          },
+        )
+      })
+      let imagesClone = [...form.images]
+      imagesClone = urls
+      console.log(imagesClone)
+      setForm({ ...form, images: imagesClone })
     })
-  });
-};
+  }
 
   const removeRecipe = (id) => {
     deleteDoc(doc(db, 'recipes', id))
@@ -146,7 +151,12 @@ const handleImages = (file, subFolder, imageName, setProgress) => {
               <div>
                 <div className="imagesContainer">
                   {recipe.images.map((imageUrl, i) => (
-                    <img className="recipeImage" key={i} src={imageUrl} alt="recipe-picture" />
+                    <img
+                      className="recipeImage"
+                      key={i}
+                      src={imageUrl}
+                      alt="recipe-picture"
+                    />
                   ))}
                 </div>
                 <h4>Ingredients</h4>
@@ -234,6 +244,9 @@ const handleImages = (file, subFolder, imageName, setProgress) => {
               </div>
 
               <div className="form-group">
+                <progress value={progress} max="100" />
+                <br />
+                <br />
                 <input type="file" multiple onChange={handleChange} />
                 <button type="button" onClick={handleImages}>
                   Upload Pics
@@ -241,9 +254,7 @@ const handleImages = (file, subFolder, imageName, setProgress) => {
               </div>
 
               <div className="buttons">
-                <button type="submit" >
-                  Submit
-                </button>
+                <button type="submit">Submit</button>
                 <button
                   type="button"
                   className="remove"
