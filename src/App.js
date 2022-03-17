@@ -1,9 +1,13 @@
-import ImageUpload from './components/ImageUpload'
-import { db } from './firebase.config'
+import { db, storage } from './firebase.config'
 import { useState, useEffect } from 'react'
-import { collection, onSnapshot, doc, addDoc, deleteDoc } from 'firebase/firestore'
-import { storage } from './firebase.config'
-import { ref, getDownloadURL } from 'firebase/storage'
+import {
+  collection,
+  onSnapshot,
+  doc,
+  addDoc,
+  deleteDoc,
+} from 'firebase/firestore'
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
 
 function App() {
   const [recipes, setRecipes] = useState([])
@@ -17,6 +21,7 @@ function App() {
   const [popupActive, setPopupActive] = useState(false)
   const [images, setImages] = useState([])
   const [urls, setUrls] = useState([])
+  const [progress, setProgress] = useState(0)
 
   const recipesCollectionRef = collection(db, 'recipes')
 
@@ -34,10 +39,10 @@ function App() {
     })
   }, [])
 
-  const handleView = id => {
+  const handleView = (id) => {
     const recipesClone = [...recipes]
 
-    recipesClone.forEach(recipe => {
+    recipesClone.forEach((recipe) => {
       if (recipe.id === id) {
         recipe.viewing = !recipe.viewing
       } else {
@@ -48,8 +53,8 @@ function App() {
     setRecipes(recipesClone)
   }
 
-  const handleSubmit = e => {
-    e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault()
     if (!form.title || !form.desc || !form.ingredients || !form.steps) {
       alert('Please fill out all the fields')
       return
@@ -70,21 +75,21 @@ function App() {
     const ingredientsClone = [...form.ingredients]
 
     ingredientsClone[i] = e.target.value
-    setForm({...form, ingredients: ingredientsClone})
+    setForm({ ...form, ingredients: ingredientsClone })
   }
 
   const handleStep = (e, i) => {
     const stepsClone = [...form.steps]
 
     stepsClone[i] = e.target.value
-    setForm({...form, steps: stepsClone})
+    setForm({ ...form, steps: stepsClone })
   }
 
   const handleIngredientCount = () => {
-    setForm({...form, ingredients: [...form.ingredients, '']})
+    setForm({ ...form, ingredients: [...form.ingredients, ''] })
   }
   const handleStepCount = () => {
-    setForm({...form, steps: [...form.steps, '']})
+    setForm({ ...form, steps: [...form.steps, ''] })
   }
   const handleChange = (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
@@ -93,25 +98,37 @@ function App() {
       setImages((prevState) => [...prevState, newImage])
     }
   }
-  const handleImages = () => {
-    images.map((image) => {
-      const fileRef = ref(storage, `images/${image.name}`)
-      getDownloadURL(fileRef)
-        .then((urls) => {
-          console.log('images: ', images)
-          console.log('urls', urls)
-          let imagesClone = [...form.images]
-          imagesClone.push(urls)
-          setForm({...form, images: imagesClone})
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+
+const handleImages = (file, subFolder, imageName, setProgress) => {
+  return new Promise((resolve, reject) => {
+    images.map(image => {
+    const imageRef = ref(storage, `images/${image.name}`)
+    const upload = uploadBytesResumable(imageRef, image);
+    upload.on(
+      'state_changed',
+      (snapShot) => {
+        const progress =
+          (snapShot.bytesTransferred / snapShot.totalBytes) * 100;
+      },
+      (error) => {
+        reject(error);
+      },
+      async () => {
+        try {
+          const url = await getDownloadURL(imageRef);
+          resolve(url);
+          console.log(url)
+        } catch (error) {
+          reject(error);
+        }
+      }
+    );
     })
-  }
-  
-  const removeRecipe = id => {
-    deleteDoc(doc(db, "recipes", id))
+  });
+};
+
+  const removeRecipe = (id) => {
+    deleteDoc(doc(db, 'recipes', id))
   }
 
   return (
@@ -125,95 +142,120 @@ function App() {
 
             <p dangerouslySetInnerHTML={{ __html: recipe.desc }}></p>
 
-            {recipe.viewing && <div>
-              <div className="imagesContainer">
-                {recipe.images.map((imageUrl, i) => (
-                  <img className="recipeImage" key={i} src={imageUrl} />
-                ))}
-              </div>
-              <h4>Ingredients</h4>
-              <ul>
-                { recipe.ingredients.map((ingredient, i) => (
-                  <li key={i}>{ ingredient }</li>
-                ))}
-              </ul>
+            {recipe.viewing && (
+              <div>
+                <div className="imagesContainer">
+                  {recipe.images.map((imageUrl, i) => (
+                    <img className="recipeImage" key={i} src={imageUrl} alt="recipe-picture" />
+                  ))}
+                </div>
+                <h4>Ingredients</h4>
+                <ul>
+                  {recipe.ingredients.map((ingredient, i) => (
+                    <li key={i}>{ingredient}</li>
+                  ))}
+                </ul>
 
-              <h4>Steps</h4>
-              <ol>
-                { recipe.steps.map((step, i) => (
-                  <li key={i}>{ step }</li>
-                ))}
-              </ol>
-            </div>}
+                <h4>Steps</h4>
+                <ol>
+                  {recipe.steps.map((step, i) => (
+                    <li key={i}>{step}</li>
+                  ))}
+                </ol>
+              </div>
+            )}
 
             <div className="buttons">
-              <button onClick={() => handleView(recipe.id)}>View { recipe.viewing ? 'less' : 'more' }</button>
-              <button className="remove" onClick={() => removeRecipe(recipe.id)}>Remove</button>
+              <button onClick={() => handleView(recipe.id)}>
+                View {recipe.viewing ? 'less' : 'more'}
+              </button>
+              <button
+                className="remove"
+                onClick={() => removeRecipe(recipe.id)}
+              >
+                Remove
+              </button>
             </div>
           </div>
         ))}
       </div>
-      {popupActive && <div className="popup">
-        <div className="popup-inner">
-          <h2>Add a new recipe</h2>
+      {popupActive && (
+        <div className="popup">
+          <div className="popup-inner">
+            <h2>Add a new recipe</h2>
 
-          <form onSubmit={handleSubmit}>
-            
-            <div className="form-group">
-              <label>Title</label>
-              <input type="text"
-                value={form.title}
-                onChange={e => setForm({ ...form, title: e.target.value })} />
-            </div>
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label>Title</label>
+                <input
+                  type="text"
+                  value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                />
+              </div>
 
-            <div className="form-group">
-              <label>Description</label>
-              <textarea type="text"
-                value={form.desc}
-                onChange={e => setForm({ ...form, desc: e.target.value })} />
-            </div>
+              <div className="form-group">
+                <label>Description</label>
+                <textarea
+                  type="text"
+                  value={form.desc}
+                  onChange={(e) => setForm({ ...form, desc: e.target.value })}
+                />
+              </div>
 
-            <div className="form-group">
-              <label>Ingredients</label>
-              { 
-                form.ingredients.map((ingredient, i) => (
+              <div className="form-group">
+                <label>Ingredients</label>
+                {form.ingredients.map((ingredient, i) => (
                   <input
                     type="text"
                     key={i}
                     value={ingredient}
-                    onChange={e => handleIngredient(e, i)} />
-                ))
-              }
-              <button type="button" onClick={handleIngredientCount}>Add ingredient</button>
-            </div>
+                    onChange={(e) => handleIngredient(e, i)}
+                  />
+                ))}
+                <button type="button" onClick={handleIngredientCount}>
+                  Add ingredient
+                </button>
+              </div>
 
-            <div className="form-group">
-              <label>Steps</label>
-              { 
-                form.steps.map((step, i) => (
+              <div className="form-group">
+                <label>Steps</label>
+                {form.steps.map((step, i) => (
                   <textarea
                     type="text"
                     key={i}
                     value={step}
-                    onChange={e => handleStep(e, i)} />
-                ))
-              }
-              <button type="button" onClick={handleStepCount}>Add step</button>
-            </div>
-            
-            <div className="form-group">
-              <input type="file" multiple onChange={handleChange} />
-              <button type="button" onClick={handleImages}>Upload Pics</button>
-            </div>
+                    onChange={(e) => handleStep(e, i)}
+                  />
+                ))}
+                <button type="button" onClick={handleStepCount}>
+                  Add step
+                </button>
+              </div>
 
-            <div className="buttons">
-              <button type="submit">Submit</button>
-              <button type="button" className="remove" onClick={() => setPopupActive(false)}>Close</button>
-            </div>
+              <div className="form-group">
+                <input type="file" multiple onChange={handleChange} />
+                <button type="button" onClick={handleImages}>
+                  Upload Pics
+                </button>
+              </div>
 
-          </form>
+              <div className="buttons">
+                <button type="submit" >
+                  Submit
+                </button>
+                <button
+                  type="button"
+                  className="remove"
+                  onClick={() => setPopupActive(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>}
+      )}
     </div>
   )
 }
