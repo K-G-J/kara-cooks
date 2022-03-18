@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { db } from '../firebase.config'
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
+import { updateDoc, doc } from 'firebase/firestore';
 import { storage } from '../firebase.config'
 
 export default function EditForm({ recipe, setEditForm }) {
@@ -14,15 +16,20 @@ export default function EditForm({ recipe, setEditForm }) {
 
   const [images, setImages] = useState([])
   const [progress, setProgress] = useState(0)
-  const handleUpdate = (e) => {
+
+  const handleUpdate = async (e, id) => {
     e.preventDefault();
-    console.log(updatedRecipe)
+    const oldRecipe = doc(db, 'recipes', id)
+    const newRecipe = updatedRecipe
+    await updateDoc(oldRecipe, newRecipe)
+    setEditForm(false);
   }
+
   const handleIngredientCount = () => {
-    updateRecipe({ ...recipe, ingredients: [...recipe.ingredients, ''] })
+    updateRecipe({ ...updatedRecipe, ingredients: [...updatedRecipe.ingredients, ''] })
   }
   const handleStepCount = () => {
-    updateRecipe({ ...recipe, steps: [...recipe.steps, ''] })
+    updateRecipe({ ...updatedRecipe, steps: [...updatedRecipe.steps, ''] })
   }
   const handleChange = (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
@@ -74,7 +81,7 @@ export default function EditForm({ recipe, setEditForm }) {
             <input
                   type="text"
                   defaultValue={recipe.title}
-                  onChange={(e) => updateRecipe({ ...recipe, title: e.target.value })}
+                  onChange={(e) => updateRecipe({ ...updatedRecipe, title: e.target.value })}
                 />
               </div>
 
@@ -83,7 +90,7 @@ export default function EditForm({ recipe, setEditForm }) {
                 <textarea
                   type="text"
                   defaultValue={recipe.desc}
-                  onChange={(e) => updateRecipe({ ...recipe, desc: e.target.value })}
+                  onChange={(e) => updateRecipe({ ...updatedRecipe, desc: e.target.value })}
                 />
               </div>
 
@@ -94,7 +101,7 @@ export default function EditForm({ recipe, setEditForm }) {
                     type="text"
                     key={i}
                     defaultValue={ingredient}
-                    onChange={(e) => updateRecipe({ ...recipe, ingredients: [...e.target.value] })}
+                    onChange={(e) => updateRecipe({ ...updatedRecipe, ingredients: [...e.target.value] })}
                   />
                 ))}
                 <button type="button" onClick={handleIngredientCount}>
@@ -109,7 +116,7 @@ export default function EditForm({ recipe, setEditForm }) {
                     type="text"
                     key={i}
                     defaultValue={step}
-                    onChange={(e) => updateRecipe({ ...recipe, steps: [...e.target.value] })}
+                    onChange={(e) => updateRecipe({ ...updatedRecipe, steps: [...e.target.value] })}
                   />
                 ))}
                 <button type="button" onClick={handleStepCount}>
@@ -127,7 +134,7 @@ export default function EditForm({ recipe, setEditForm }) {
               </div>
 
               <div className="buttons">
-                <button type="submit">Submit</button>
+                <button type="submit" onClick={(e) => handleUpdate(e, recipe.id)}>Submit</button>
                 <button type="button" className="remove" onClick={() => setEditForm(false)} > Close </button>
               </div>
             </form>
