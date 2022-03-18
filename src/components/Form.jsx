@@ -147,22 +147,15 @@ export default function Form({ recipesCollectionRef, setPopupActive }) {
               <div className="form-group">
                 <progress value={progress} max="100" />
                 <br />
-                <br />
-                <input type="file" multiple onChange={handleChange} />
-                <button type="button" onClick={handleImages}>
-                  Upload Pics
-                </button>
+            <br />
+            <label for="file-upload" class="custom-file-upload">Browse</label>
+                <input id="file-upload" type="file" multiple onChange={handleChange} />
+                <button type="button" onClick={handleImages}> Click to upload pics</button>
               </div>
 
               <div className="buttons">
                 <button type="submit">Submit</button>
-                <button
-                  type="button"
-                  className="remove"
-                  onClick={() => setPopupActive(false)}
-                >
-                  Close
-                </button>
+                <button type="button" className="remove" onClick={() => setPopupActive(false)} > Close </button>
               </div>
             </form>
           </div>

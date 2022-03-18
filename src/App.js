@@ -47,7 +47,7 @@ function App() {
   return (
     <div className="App">
       <div className="logo-container">
-      <h1>Kara Cooks</h1>
+      <h1 id="logo-text">Kara Cooks</h1>
       <span><img id="bean-chef" src="Bean-Chef.png" /></span>
       </div>
       <button onClick={() => setPopupActive(!popupActive)}>Add recipe</button>
