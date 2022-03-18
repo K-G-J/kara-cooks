@@ -79,7 +79,6 @@ h1 {
   width: 100%;
   height: 100%;
   padding: .2em;
-  color: #E2C044;
   margin: 0 15px;
   font-size: 4em;
 }
@@ -91,31 +90,64 @@ h1 {
   justify-content: center;
   align-items: center;
   align-content: center;
+  border-color: none;
+
+}
+.rec-carousel-control {
+  color: #E2C044;
+}
+.rec-carousel-item:enabled {
+  background-color: none;
+  border-color: none;
 }
 .rec-carousel-item:focus {
     outline: none;
-    box-shadow: inset 0 0 1px 1px lightgray;
 }
 .rec-carousel-item:hover {
     outline: none;
-    box-shadow: inset 0 0 1px 1px lightgray;
+    border-color: none;
 }
-.rec.rec-arrow {
-    border-radius: 5;
-    background-color: #E2C044;
-}
-.rec.rec-arrow:hover {
-    border-radius: 5;
-    background-color: #E2C044;
-}
-.rec.rec-arrow:focus {
-    border-radius: 5;
-    background-color: #E2C044;
-}
-.rec.rec-arrow:hover:enabled {
+.rec.rec-arrow:disabled {
   border-radius: 5;
   background-color: #E2C044;
 }
+.rec.rec-arrow:enabled {
+  border-radius: 5;
+  background-color: #E2C044;
+} 
+.rec.rec-arrow:enabled:hover {
+  border-radius: 5;
+  background-color: #E2C044;
+} 
+.rec.rec-arrow:disabled:hover {
+  border-radius: 5;
+  background-color: #E2C044;
+} 
+.rec.rec-arrow:enabled:not(:hover) {
+  border-radius: 5;
+  background-color: #E2C044;
+} 
+.rec.rec-arrow:disabled:not(:hover) {
+  border-radius: 5;
+  background-color: #E2C044;
+}
+.rec.rec-arrow:disabled:hover {
+  border-radius: 5;
+  background-color: #E2C044;
+} 
+.rec.rec-arrow:not(:disabled) {
+  border-radius: 5;
+  background-color: #E2C044;
+}
+.rec.rec-arrow:not(:enabled) {
+  border-radius: 5;
+  background-color: #E2C044;
+}
+.rec.rec-arrow {
+  border-radius: 5;
+  background-color: #E2C044;
+}
+
 .rec.rec-dot_active {
   background: #E2C044;
   box-shadow: 0 0 1px 1px lightgray;
