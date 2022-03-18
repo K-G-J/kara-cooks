@@ -1,7 +1,9 @@
-import React from 'react'
-import Carousel from "react-elastic-carousel";
+import { useState} from 'react'
+import Carousel from 'react-elastic-carousel';
+import EditForm from './EditForm'
 
 export default function RecipeCard({ recipe, onRemoveRecipe, onHandleView }) {
+  const [editForm, setEditForm] = useState(false)
 
   const breakPoints = [
     { width: 1, itemsToShow: 1 },
@@ -48,7 +50,9 @@ export default function RecipeCard({ recipe, onRemoveRecipe, onHandleView }) {
       <div className="buttons">
         <button onClick={() => onHandleView(recipe.id)}> View {recipe.viewing ? 'less' : 'more'}{' '} </button>
         <button className="remove" onClick={() => onRemoveRecipe(recipe.id)}> Remove </button>
+        <button className="edit" onClick={() => setEditForm(true)}> Edit </button>
       </div>
+      {editForm && (<EditForm recipe={recipe} setEditForm={setEditForm}/>)}
     </div>
   )
 }

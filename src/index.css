@@ -232,7 +232,7 @@ progress::-webkit-progress-bar {
 progress::-webkit-progress-value {
   background-color: #E2C044;
   border-radius: 1.5rem;
-  box-shadow: 1px 1px 5px 3px lightgray;
+  box-shadow: 1px 1px 5px 0px lightgray;
 }
 #file-upload {
   display: none;

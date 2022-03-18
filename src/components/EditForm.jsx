@@ -1,56 +1,28 @@
 import { useState } from 'react'
-import { addDoc } from 'firebase/firestore'
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
 import { storage } from '../firebase.config'
 
-export default function Form({ recipesCollectionRef, setPopupActive }) {
+export default function EditForm({ recipe, setEditForm }) {
 
-  const [form, setForm] = useState({
+  const [updatedRecipe, updateRecipe] = useState({
     title: '',
     desc: '',
     ingredients: [],
     steps: [],
     images: [],
   })
+
   const [images, setImages] = useState([])
   const [progress, setProgress] = useState(0)
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (!form.title || !form.desc || !form.ingredients || !form.steps) {
-      alert('Please fill out all the fields')
-      return
-    }
-
-    addDoc(recipesCollectionRef, form)
-    setForm({
-      title: '',
-      desc: '',
-      ingredients: [],
-      steps: [],
-      images: [],
-    })
-    setPopupActive(false)
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    console.log(updatedRecipe)
   }
-  const handleIngredient = (e, i) => {
-    const ingredientsClone = [...form.ingredients]
-
-    ingredientsClone[i] = e.target.value
-    setForm({ ...form, ingredients: ingredientsClone })
-  }
-
-  const handleStep = (e, i) => {
-    const stepsClone = [...form.steps]
-
-    stepsClone[i] = e.target.value
-    setForm({ ...form, steps: stepsClone })
-  }
-
   const handleIngredientCount = () => {
-    setForm({ ...form, ingredients: [...form.ingredients, ''] })
+    updateRecipe({ ...recipe, ingredients: [...recipe.ingredients, ''] })
   }
   const handleStepCount = () => {
-    setForm({ ...form, steps: [...form.steps, ''] })
+    updateRecipe({ ...recipe, steps: [...recipe.steps, ''] })
   }
   const handleChange = (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
@@ -86,23 +58,23 @@ export default function Form({ recipesCollectionRef, setPopupActive }) {
           },
         )
       })
-      let imagesClone = [...form.images]
+      let imagesClone = [...recipe.images]
       imagesClone = urls
-      setForm({ ...form, images: imagesClone })
+      updateRecipe({ ...recipe, images: imagesClone })
     })
   }
   return (
-          <div className="popup">
+    <div className="popup">
           <div className="popup-inner">
-            <h2>Add a new recipe</h2>
+            <h2>Edit Recipe</h2>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleUpdate}>
               <div className="form-group">
                 <label>Title</label>
-                <input
+            <input
                   type="text"
-                  value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                  defaultValue={recipe.title}
+                  onChange={(e) => updateRecipe({ ...recipe, title: e.target.value })}
                 />
               </div>
 
@@ -110,19 +82,19 @@ export default function Form({ recipesCollectionRef, setPopupActive }) {
                 <label>Description</label>
                 <textarea
                   type="text"
-                  value={form.desc}
-                  onChange={(e) => setForm({ ...form, desc: e.target.value })}
+                  defaultValue={recipe.desc}
+                  onChange={(e) => updateRecipe({ ...recipe, desc: e.target.value })}
                 />
               </div>
 
               <div className="form-group">
                 <label>Ingredients</label>
-                {form.ingredients.map((ingredient, i) => (
+                {recipe.ingredients.map((ingredient, i) => (
                   <input
                     type="text"
                     key={i}
-                    value={ingredient}
-                    onChange={(e) => handleIngredient(e, i)}
+                    defaultValue={ingredient}
+                    onChange={(e) => updateRecipe({ ...recipe, ingredients: [...e.target.value] })}
                   />
                 ))}
                 <button type="button" onClick={handleIngredientCount}>
@@ -132,12 +104,12 @@ export default function Form({ recipesCollectionRef, setPopupActive }) {
 
               <div className="form-group">
                 <label>Steps</label>
-                {form.steps.map((step, i) => (
+                {recipe.steps.map((step, i) => (
                   <textarea
                     type="text"
                     key={i}
-                    value={step}
-                    onChange={(e) => handleStep(e, i)}
+                    defaultValue={step}
+                    onChange={(e) => updateRecipe({ ...recipe, steps: [...e.target.value] })}
                   />
                 ))}
                 <button type="button" onClick={handleStepCount}>
@@ -156,7 +128,7 @@ export default function Form({ recipesCollectionRef, setPopupActive }) {
 
               <div className="buttons">
                 <button type="submit">Submit</button>
-                <button type="button" className="remove" onClick={() => setPopupActive(false)} > Close </button>
+                <button type="button" className="remove" onClick={() => setEditForm(false)} > Close </button>
               </div>
             </form>
           </div>

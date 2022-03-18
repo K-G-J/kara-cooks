@@ -38,7 +38,6 @@ function App() {
 
     setRecipes(recipesClone)
   }
-  
 
   const removeRecipe = (id) => {
     deleteDoc(doc(db, 'recipes', id))
