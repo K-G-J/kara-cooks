@@ -104,9 +104,7 @@ export default function EditForm({ recipe, setEditForm }) {
                     onChange={(e) => updateRecipe({ ...updatedRecipe, ingredients: [...e.target.value] })}
                   />
                 ))}
-                <button type="button" onClick={handleIngredientCount}>
-                  Add ingredient
-                </button>
+                <button type="button" onClick={handleIngredientCount}> Add ingredient </button>
               </div>
 
               <div className="form-group">
@@ -119,9 +117,7 @@ export default function EditForm({ recipe, setEditForm }) {
                     onChange={(e) => updateRecipe({ ...updatedRecipe, steps: [...e.target.value] })}
                   />
                 ))}
-                <button type="button" onClick={handleStepCount}>
-                  Add step
-                </button>
+                <button type="button" onClick={handleStepCount}> Add step </button>
               </div>
 
               <div className="form-group">

@@ -125,9 +125,7 @@ export default function Form({ recipesCollectionRef, setPopupActive }) {
                     onChange={(e) => handleIngredient(e, i)}
                   />
                 ))}
-                <button type="button" onClick={handleIngredientCount}>
-                  Add ingredient
-                </button>
+                <button type="button" onClick={handleIngredientCount}> Add ingredient </button>
               </div>
 
               <div className="form-group">
@@ -140,9 +138,7 @@ export default function Form({ recipesCollectionRef, setPopupActive }) {
                     onChange={(e) => handleStep(e, i)}
                   />
                 ))}
-                <button type="button" onClick={handleStepCount}>
-                  Add step
-                </button>
+                <button type="button" onClick={handleStepCount}> Add step </button>
               </div>
 
               <div className="form-group">

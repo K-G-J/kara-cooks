@@ -19,7 +19,7 @@ export default function RecipeCard({ recipe, onRemoveRecipe, onHandleView }) {
 
       {recipe.viewing && (
         <div>
-          <div className="imagesContainer">
+          <div className={!recipe.images.length ? "hidden" : "imagesContainer"}>
             <Carousel className="carousel" breakPoints={breakPoints}>
               {recipe.images.map((imageUrl, i) =>
                 <img
