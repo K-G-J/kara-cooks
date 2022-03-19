@@ -1,4 +1,4 @@
-import { useState} from 'react'
+import React, { useState} from 'react'
 import Carousel from 'react-elastic-carousel';
 import EditForm from './EditForm'
 
@@ -27,9 +27,9 @@ export default function RecipeCard({ recipe, onRemoveRecipe, onHandleView }) {
       <p dangerouslySetInnerHTML={{ __html: recipe.desc }}></p>
 
       {recipe.viewing && (
-        <div>
-          <div>
-            <div className={!recipe.images.length ? "hidden" : "imagesContainer"}>
+        <div className="viewingCard">
+          <div className="viewingCard">
+            <div id="recipeImageCard" className={!recipe.images.length ? "hidden" : "imagesContainer"}>
               <div id="imagesWrapper" className={`recipeImage-${isZoom ? "zoomed" : "normal"}`}>
                 <Carousel id="carousel" breakPoints={breakPoints}>
                 {recipe.images.map((imageUrl, i) =>

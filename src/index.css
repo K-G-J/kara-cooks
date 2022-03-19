@@ -88,6 +88,20 @@ h1 {
   align-items: center;
   align-content: center;
 }
+.recipeCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+.viewingCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
 /* .imagesContainer:hover {
   transform: scale(1.8); 
 } */
@@ -102,6 +116,7 @@ h1 {
   padding: .2em;
   margin: 0 15px;
   font-size: 4em;
+  width: 100%;
 }
 #carousel {
   display: flex;

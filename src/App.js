@@ -52,7 +52,7 @@ function App() {
       <button onClick={() => setPopupActive(!popupActive)}>Add recipe</button>
       <div className="recipes">
         {recipes.map((recipe, i) => (
-          <RecipeCard key={i} recipe={recipe} onHandleView={handleView} onRemoveRecipe={removeRecipe} />))}
+          <RecipeCard className="recipeCard" key={i} recipe={recipe} onHandleView={handleView} onRemoveRecipe={removeRecipe} />))}
       </div>
       {popupActive && (<Form recipesCollectionRef={recipesCollectionRef} setPopupActive={setPopupActive} />)}
     </div>
