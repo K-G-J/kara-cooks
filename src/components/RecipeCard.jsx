@@ -4,6 +4,7 @@ import EditForm from './EditForm'
 
 export default function RecipeCard({ recipe, onRemoveRecipe, onHandleView }) {
   const [editForm, setEditForm] = useState(false)
+  const [isZoom, setZoom] = useState("false");
 
   const breakPoints = [
     { width: 1, itemsToShow: 1 },
@@ -11,6 +12,14 @@ export default function RecipeCard({ recipe, onRemoveRecipe, onHandleView }) {
     { width: 768, itemsToShow: 3 },
     { width: 1200, itemsToShow: 4 },
   ];
+
+
+ 
+
+  const handleZoom = () => {
+    setZoom(!isZoom);
+  };
+
   return (
     <div className="recipe" key={recipe.id}>
       <h3>{recipe.title}</h3>
@@ -19,16 +28,20 @@ export default function RecipeCard({ recipe, onRemoveRecipe, onHandleView }) {
 
       {recipe.viewing && (
         <div>
-          <div className={!recipe.images.length ? "hidden" : "imagesContainer"}>
-            <Carousel className="carousel" breakPoints={breakPoints}>
-              {recipe.images.map((imageUrl, i) =>
-                <img
-                  className="recipeImage"
-                  key={i}
-                  src={imageUrl}
-                  alt="recipe-picture"
-                />)}
-            </Carousel>
+          <div>
+            <div className={!recipe.images.length ? "hidden" : "imagesContainer"}>
+              <div id="imagesWrapper" className={`recipeImage-${isZoom ? "zoomed" : "normal"}`}>
+                <Carousel id="carousel" breakPoints={breakPoints}>
+                {recipe.images.map((imageUrl, i) =>
+                  <img
+                    onClick={handleZoom} 
+                    className ="recipeImage"
+                    key={i}
+                    src={imageUrl}
+                    alt="recipe-picture"
+                  />)}
+                </Carousel>
+              </div>
           </div>
 
           <h4>Ingredients</h4>
@@ -43,7 +56,8 @@ export default function RecipeCard({ recipe, onRemoveRecipe, onHandleView }) {
             {recipe.steps.map((step, i) => (
               <li key={i}>{step}</li>
             ))}
-          </ol>
+            </ol>
+            </div>
         </div>
       )}
       
