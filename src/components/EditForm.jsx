@@ -19,6 +19,7 @@ export default function EditForm({ recipe, setEditForm }) {
 
   const handleUpdate = async (e, id) => {
     e.preventDefault();
+    console.log('Updated Recipe: ', updatedRecipe)
     const oldRecipe = doc(db, 'recipes', id)
     const newRecipe = updatedRecipe
     await updateDoc(oldRecipe, newRecipe)
@@ -26,6 +27,10 @@ export default function EditForm({ recipe, setEditForm }) {
   }
 
   const handleIngredientCount = () => {
+    // const stepsClone = [...form.steps]
+
+    // stepsClone[i] = e.target.value
+    // setForm({ ...form, steps: stepsClone })
     updateRecipe({ ...updatedRecipe, ingredients: [...updatedRecipe.ingredients, ''] })
   }
   const handleStepCount = () => {
