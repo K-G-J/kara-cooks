@@ -74,6 +74,12 @@ h1 {
 .recipeImage {
   width: 100%
 }
+/* .rec-carousel:hover {
+  transform: scale(1.8); 
+} */
+.imagesContainer:hover {
+  transform: scale(1.8); 
+}
 .imagesContainer {
   display: flex;
   justify-content: center;
@@ -84,9 +90,6 @@ h1 {
   padding: .2em;
   margin: 0 15px;
   font-size: 4em;
-}
-.imagesContainer:hover {
-  transform: scale(1.8); 
 }
 .carousel {
   display: flex;

@@ -6,14 +6,14 @@ import { storage } from '../firebase.config'
 
 export default function EditForm({ recipe, setEditForm }) {
 
-  const recipeClone = recipe
+  const recipeClone = {...recipe}
 
   const [updatedRecipe, updateRecipe] = useState({
-    title: recipeClone.title.slice(),
-    desc: recipeClone.desc.slice(),
-    ingredients: [...recipeClone.ingredients],
-    steps: [...recipeClone.steps],
-    images: [...recipeClone.images],
+    title: recipeClone.title,
+    desc: recipeClone.desc,
+    ingredients: recipeClone.ingredients,
+    steps: recipeClone.steps,
+    images: recipeClone.images,
   })
 
   const [images, setImages] = useState([])
