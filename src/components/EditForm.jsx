@@ -21,7 +21,6 @@ export default function EditForm({ recipe, setEditForm }) {
 
   const handleUpdate = async (e, id) => {
     e.preventDefault();
-    console.log('Updated Recipe: ', updatedRecipe)
     const oldRecipe = doc(db, 'recipes', id)
     const newRecipe = updatedRecipe
     await updateDoc(oldRecipe, newRecipe)
@@ -40,10 +39,10 @@ export default function EditForm({ recipe, setEditForm }) {
     updateRecipe({ ...updatedRecipe, steps: stepsClone })
   }
   const handleIngredientCount = () => {
-    recipeClone.ingredients = [...recipeClone.ingredients, '']
+    updateRecipe({ ...updatedRecipe, ingredients: [...updatedRecipe.ingredients, ''] })
   }
   const handleStepCount = () => {
-    recipeClone.steps = [...recipeClone.steps, '']
+    updateRecipe({ ...updatedRecipe, steps: [...updatedRecipe.steps, ''] })
   }
   const handleChange = (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
@@ -110,7 +109,7 @@ export default function EditForm({ recipe, setEditForm }) {
 
               <div className="form-group">
                 <label>Ingredients</label>
-                {recipeClone.ingredients.map((ingredient, i) => (
+                {updatedRecipe.ingredients.map((ingredient, i) => (
                   <input
                     type="text"
                     key={i}
@@ -123,7 +122,7 @@ export default function EditForm({ recipe, setEditForm }) {
 
               <div className="form-group">
                 <label>Steps</label>
-                {recipeClone.steps.map((step, i) => (
+                {updatedRecipe.steps.map((step, i) => (
                   <textarea
                     type="text"
                     key={i}
