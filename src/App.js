@@ -1,5 +1,6 @@
 import { db } from './firebase.config'
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom';
 import { collection, onSnapshot, doc, deleteDoc, } from 'firebase/firestore'
 import RecipeCard from './components/RecipeCard'
 import Form from './components/Form.jsx'
@@ -24,6 +25,10 @@ function App() {
     })
   }, [])
 
+  const refresh = () => {
+    window.location.reload();
+  }
+
 
   const handleView = (id) => {
     const recipesClone = [...recipes]
@@ -46,8 +51,8 @@ function App() {
   return (
     <div className="App">
       <div className="logo-container">
-      <h1 id="logo-text">Kara Cooks</h1>
-      <span><img id="bean-chef" src="Bean-Chef.png" /></span>
+        <h1 onClick={refresh} id="logo-text">Kara Cooks</h1>
+        <span onClick={refresh} ><img id="bean-chef" src="Bean-Chef.png" /></span>
       </div>
       <button onClick={() => setPopupActive(!popupActive)}>Add recipe</button>
       <div className="recipes">

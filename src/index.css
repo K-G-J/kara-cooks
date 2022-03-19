@@ -201,6 +201,12 @@ button {
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
   background-color: var(--blue);
+} 
+
+button:hover {
+  color:#fff;
+  /* text-shadow:1px 1px 10px lightgray, 1px 1px 10px lightgray; */
+  text-align:center;
 }
 
 .buttons {
@@ -217,6 +223,10 @@ button {
 button.remove {
   color: var(--light);
   background-color: var(--crimson);
+}
+button.remove:hover {
+  color:#fff;
+  text-align:center;
 }
 
 h4 {
