@@ -6,12 +6,14 @@ import { storage } from '../firebase.config'
 
 export default function EditForm({ recipe, setEditForm }) {
 
+  const recipeClone = recipe
+
   const [updatedRecipe, updateRecipe] = useState({
-    title: recipe.title.slice(),
-    desc: recipe.desc.slice(),
-    ingredients: [...recipe.ingredients],
-    steps: [...recipe.steps],
-    images: [...recipe.images],
+    title: recipeClone.title.slice(),
+    desc: recipeClone.desc.slice(),
+    ingredients: [...recipeClone.ingredients],
+    steps: [...recipeClone.steps],
+    images: [...recipeClone.images],
   })
 
   const [images, setImages] = useState([])
@@ -20,10 +22,10 @@ export default function EditForm({ recipe, setEditForm }) {
   const handleUpdate = async (e, id) => {
     e.preventDefault();
     console.log('Updated Recipe: ', updatedRecipe)
-    // const oldRecipe = doc(db, 'recipes', id)
-    // const newRecipe = updatedRecipe
-    // await updateDoc(oldRecipe, newRecipe)
-    // setEditForm(false);
+    const oldRecipe = doc(db, 'recipes', id)
+    const newRecipe = updatedRecipe
+    await updateDoc(oldRecipe, newRecipe)
+    setEditForm(false);
   }
   const handleIngredient = (e, i) => {
     const ingredientsClone = [...updatedRecipe.ingredients]
@@ -38,10 +40,10 @@ export default function EditForm({ recipe, setEditForm }) {
     updateRecipe({ ...updatedRecipe, steps: stepsClone })
   }
   const handleIngredientCount = () => {
-    updateRecipe({ ...updatedRecipe, ingredients: [...updatedRecipe.ingredients, ''] })
+    recipeClone.ingredients = [...recipeClone.ingredients, '']
   }
   const handleStepCount = () => {
-    updateRecipe({ ...updatedRecipe, steps: [...updatedRecipe.steps, ''] })
+    recipeClone.steps = [...recipeClone.steps, '']
   }
   const handleChange = (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
@@ -77,9 +79,9 @@ export default function EditForm({ recipe, setEditForm }) {
           },
         )
       })
-      let imagesClone = [...recipe.images]
+      let imagesClone = [...updatedRecipe.images]
       imagesClone = urls
-      updateRecipe({ ...recipe, images: imagesClone })
+      updateRecipe({ ...updatedRecipe, images: imagesClone })
     })
   }
   return (
@@ -92,7 +94,7 @@ export default function EditForm({ recipe, setEditForm }) {
                 <label>Title</label>
             <input
                   type="text"
-                  defaultValue={recipe.title}
+                  defaultValue={recipeClone.title}
                   onChange={(e) => updateRecipe({ ...updatedRecipe, title: e.target.value })}
                 />
               </div>
@@ -101,14 +103,14 @@ export default function EditForm({ recipe, setEditForm }) {
                 <label>Description</label>
                 <textarea
                   type="text"
-                  defaultValue={recipe.desc}
+                  defaultValue={recipeClone.desc}
                   onChange={(e) => updateRecipe({ ...updatedRecipe, desc: e.target.value })}
                 />
               </div>
 
               <div className="form-group">
                 <label>Ingredients</label>
-                {recipe.ingredients.map((ingredient, i) => (
+                {recipeClone.ingredients.map((ingredient, i) => (
                   <input
                     type="text"
                     key={i}
@@ -121,7 +123,7 @@ export default function EditForm({ recipe, setEditForm }) {
 
               <div className="form-group">
                 <label>Steps</label>
-                {recipe.steps.map((step, i) => (
+                {recipeClone.steps.map((step, i) => (
                   <textarea
                     type="text"
                     key={i}
@@ -142,7 +144,7 @@ export default function EditForm({ recipe, setEditForm }) {
               </div>
 
               <div className="buttons">
-                <button type="submit" onClick={(e) => handleUpdate(e, recipe.id)}>Submit</button>
+                <button type="submit" onClick={(e) => handleUpdate(e, recipeClone.id)}>Submit</button>
                 <button type="button" className="remove" onClick={() => setEditForm(false)} > Close </button>
               </div>
             </form>
