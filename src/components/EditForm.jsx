@@ -11,6 +11,7 @@ export default function EditForm({ recipe, setEditForm }) {
   const [updatedRecipe, updateRecipe] = useState({
     title: recipeClone.title,
     desc: recipeClone.desc,
+    link: recipeClone.link,
     ingredients: recipeClone.ingredients,
     steps: recipeClone.steps,
     images: recipeClone.images,
@@ -96,7 +97,17 @@ export default function EditForm({ recipe, setEditForm }) {
                   defaultValue={recipeClone.title}
                   onChange={(e) => updateRecipe({ ...updatedRecipe, title: e.target.value })}
                 />
-              </div>
+          </div>
+
+           <div className="form-group">
+                <label>Link</label>
+            <input
+                  type="text"
+                  defaultValue={recipeClone.link}
+                  onChange={(e) => updateRecipe({ ...updatedRecipe, link: e.target.value })}
+                />
+          </div>
+          
 
               <div className="form-group">
                 <label>Description</label>

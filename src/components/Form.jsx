@@ -26,6 +26,7 @@ export default function Form({ recipesCollectionRef, setPopupActive }) {
     setForm({
       title: '',
       desc: '',
+      link: '',
       ingredients: [],
       steps: [],
       images: [],
@@ -105,7 +106,16 @@ export default function Form({ recipesCollectionRef, setPopupActive }) {
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                 />
               </div>
-
+          
+              <div className="form-group">
+                <label>Link</label>
+                <input
+                  type="text"
+                  value={form.link}
+                  onChange={(e) => setForm({ ...form, link: e.target.value })}
+                />
+              </div>
+          
               <div className="form-group">
                 <label>Description</label>
                 <textarea
